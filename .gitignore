@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter
+.ipynb_checkpoints/
+.virtual_documents/
+
+# Virtual Environments
+venv/
+env/
+.venv/
+
+# VS Code
+.vscode/
+
+# JupyterLab / Anaconda
+anaconda_projects/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
