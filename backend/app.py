@@ -2,11 +2,17 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import pandas as pd
 import joblib
+from pathlib import Path
 
 app = FastAPI()
 
-model = joblib.load("../models/model.pkl")
-encoders = joblib.load("../models/encoders.pkl")
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+model = joblib.load(BASE_DIR / "models" / "model.pkl")
+encoders = joblib.load(BASE_DIR / "models" / "encoders.pkl")
+
+
 
 
 class CarInput(BaseModel):
