@@ -1,13 +1,12 @@
 import streamlit as st
 import requests
-import joblib
 
 # ---------------- PAGE CONFIG ---------------- #
 
 st.set_page_config(
     page_title="Car Price Predictor",
     page_icon="🚗",
-    layout="centered"
+    layout="wide"
 )
 
 # ---------------- CUSTOM CSS ---------------- #
@@ -15,99 +14,135 @@ st.set_page_config(
 st.markdown("""
 <style>
 
-/* App Background */
+/* Background */
 .stApp {
-    background-color: #eef2f7;
+    background: linear-gradient(
+        135deg,
+        #0f172a 0%,
+        #111827 100%
+    );
 }
 
-/* Main White Card */
-.main .block-container {
-    background: white;
-    padding: 2.5rem;
-    border-radius: 20px;
-    box-shadow: 0px 4px 20px rgba(0,0,0,0.08);
-    max-width: 900px;
+/* Main Container */
+.block-container {
+    max-width: 1100px;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
 }
 
 /* Title */
-h1 {
+.title {
     text-align: center;
-    color: #0f172a;
-    font-size: 3rem;
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 0.5rem;
 }
 
 /* Subtitle */
 .subtitle {
     text-align: center;
-    color: #64748b;
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
-}
-
-/* Selectboxes */
-div[data-baseweb="select"] > div {
-    background-color: #f8fafc !important;
-    border: 1px solid #cbd5e1 !important;
-    border-radius: 10px !important;
-}
-
-/* Number Input */
-.stNumberInput input {
-    background-color: #f8fafc !important;
-    border: 1px solid #cbd5e1 !important;
-    border-radius: 10px !important;
-}
-
-/* Predict Button */
-.stButton > button {
-    width: 100%;
-    height: 55px;
-    border-radius: 12px;
-    background: #2563eb;
-    color: white;
-    border: none;
-    font-size: 20px;
-    font-weight: 600;
-}
-
-.stButton > button:hover {
-    background: #1d4ed8;
-    color: white;
+    color: #94a3b8;
+    font-size: 1.2rem;
+    margin-bottom: 3rem;
 }
 
 /* Labels */
 label {
+    color: white !important;
     font-weight: 600 !important;
+    font-size: 16px !important;
+}
+
+/* Selectbox */
+div[data-baseweb="select"] > div {
+    background: #1e293b !important;
+    border: 1px solid #334155 !important;
+    border-radius: 14px !important;
+    color: white !important;
+}
+
+/* Selectbox text */
+div[data-baseweb="select"] span {
+    color: white !important;
+}
+
+/* Number Input */
+.stNumberInput input {
+    background: #1e293b !important;
+    color: white !important;
+    border: 1px solid #334155 !important;
+    border-radius: 14px !important;
+}
+
+/* Button */
+.stButton > button {
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(
+        135deg,
+        #2563eb,
+        #1d4ed8
+    );
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.stButton > button:hover {
+    background: linear-gradient(
+        135deg,
+        #1d4ed8,
+        #1e40af
+    );
+    color: white;
 }
 
 /* Result Card */
 .result-card {
-    background: #dcfce7;
-    color: #166534;
-    padding: 20px;
-    border-radius: 12px;
+    margin-top: 25px;
+    background: linear-gradient(
+        135deg,
+        #2563eb,
+        #1d4ed8
+    );
+    padding: 30px;
+    border-radius: 20px;
     text-align: center;
-    font-size: 28px;
-    font-weight: bold;
-    margin-top: 20px;
+    color: white;
+}
+
+.result-card h2 {
+    margin-bottom: 10px;
+}
+
+.result-price {
+    font-size: 2.5rem;
+    font-weight: 800;
+}
+
+/* Hide Streamlit Footer */
+footer {
+    visibility: hidden;
+}
+
+header {
+    visibility: hidden;
 }
 
 </style>
 """, unsafe_allow_html=True)
 
-# ---------------- LOAD ENCODERS ---------------- #
-
-encoders = joblib.load("../models/encoders.pkl")
-
-brands = list(encoders["brand"].classes_)
-fuels = list(encoders["fuel"].classes_)
-seller_types = list(encoders["seller_type"].classes_)
-transmissions = list(encoders["transmission"].classes_)
-owners = list(encoders["owner"].classes_)
-
 # ---------------- HEADER ---------------- #
 
-st.title("🚗 Car Price Predictor")
+st.markdown(
+    """
+    <h1 class="title">🚗 Car Price Predictor</h1>
+    """,
+    unsafe_allow_html=True
+)
 
 st.markdown(
     """
@@ -120,15 +155,66 @@ st.markdown(
 
 # ---------------- FORM ---------------- #
 
-brand = st.selectbox(
-    "Brand",
-    brands
-)
+col1, col2 = st.columns(2)
 
-year = st.selectbox(
-    "Year",
-    list(range(2025, 1990, -1))
-)
+with col1:
+
+    brand = st.selectbox(
+        "Brand",
+        [
+            "Maruti",
+            "Hyundai",
+            "Honda",
+            "Toyota",
+            "Ford",
+            "Mahindra",
+            "Tata"
+        ]
+    )
+
+    year = st.selectbox(
+        "Manufacturing Year",
+        list(range(2025, 1990, -1))
+    )
+
+    fuel = st.selectbox(
+        "Fuel Type",
+        [
+            "Petrol",
+            "Diesel",
+            "CNG",
+            "LPG"
+        ]
+    )
+
+with col2:
+
+    seller_type = st.selectbox(
+        "Seller Type",
+        [
+            "Individual",
+            "Dealer",
+            "Trustmark Dealer"
+        ]
+    )
+
+    transmission = st.selectbox(
+        "Transmission",
+        [
+            "Manual",
+            "Automatic"
+        ]
+    )
+
+    owner = st.selectbox(
+        "Owner",
+        [
+            "First Owner",
+            "Second Owner",
+            "Third Owner",
+            "Fourth & Above Owner"
+        ]
+    )
 
 km_driven = st.number_input(
     "Kilometers Driven",
@@ -137,29 +223,13 @@ km_driven = st.number_input(
     step=1000
 )
 
-fuel = st.selectbox(
-    "Fuel Type",
-    fuels
-)
+st.write("")
 
-seller_type = st.selectbox(
-    "Seller Type",
-    seller_types
-)
+predict = st.button("🚀 Predict Price")
 
-transmission = st.selectbox(
-    "Transmission",
-    transmissions
-)
+# ---------------- PREDICTION ---------------- #
 
-owner = st.selectbox(
-    "Owner",
-    owners
-)
-
-# ---------------- PREDICT ---------------- #
-
-if st.button("📈 Predict Price"):
+if predict:
 
     payload = {
         "brand": brand,
@@ -174,18 +244,22 @@ if st.button("📈 Predict Price"):
     try:
 
         response = requests.post(
-            "http://127.0.0.1:8000/predict",
-            json=payload
+            "https://car-price-predictor-n8wh.onrender.com/predict",
+            json=payload,
+            timeout=30
         )
 
         if response.status_code == 200:
 
-            result = response.json()
+            prediction = response.json()["predicted_price"]
 
             st.markdown(
                 f"""
                 <div class="result-card">
-                Predicted Price: ₹{result['predicted_price']:,.0f}
+                    <h2>Estimated Resale Price</h2>
+                    <div class="result-price">
+                        ₹ {prediction:,.0f}
+                    </div>
                 </div>
                 """,
                 unsafe_allow_html=True
